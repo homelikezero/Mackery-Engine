@@ -1,0 +1,5 @@
+Smoothly sets BF Notes
+X value.
+
+Value 1: Duration (0 = Instant)
+Value 2: Target X value
