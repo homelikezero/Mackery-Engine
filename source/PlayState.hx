@@ -3767,12 +3767,13 @@ class PlayState extends MusicBeatState
 			// always show the graphic
 			//if (!OptionsHandler.options.dontMuteMiss)
 				//vocals.volume = 0;
-			if (fragilefunkin && poisonTimes < 3)
+			if (fragilefunkin)
 			{
 				poisonTimes += 1;
 				var fragilefunkinTimer = new FlxTimer().start(0.5, function(tmr:FlxTimer)
 				{
 					health -= 0.04;
+					trace("Poison Started!");
 				}, 0);
 				// stop timer after 3 seconds
 				new FlxTimer().start(3, function(tmr:FlxTimer)
