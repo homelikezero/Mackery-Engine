@@ -3774,7 +3774,7 @@ class PlayState extends MusicBeatState
 				{
 					health -= 0.04;
 					trace("Poison Started!");
-				}, 0);
+				}, 3);
 				// stop timer after 3 seconds
 				new FlxTimer().start(3, function(tmr:FlxTimer)
 				{
