@@ -79,6 +79,9 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 
 		var option:GameplayOption = new GameplayOption('Botplay', 'botplay', 'bool', false);
 		optionsArray.push(option);
+
+		var option:GameplayOption = new GameplayOption('Fragile Funkin', 'poison', 'bool', false);
+		optionsArray.push(option);
 	}
 
 	public function new()
