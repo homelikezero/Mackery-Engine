@@ -2249,11 +2249,11 @@ class PlayState extends MusicBeatState
 		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (150 * iconP2.scale.x) / 2 - iconOffset * 2;
 
 		if (poisonTimes > 0 && !barShowingPoison) {
-			var rightSideFill = boyfriend.bfColor : boyfriend.poisonColor;
+			var rightSideFill = boyfriend.poisonColor;
 			healthBar.createFilledBar(leftSideFill, rightSideFill);
 			barShowingPoison = true;
 		} else if (poisonTimes == 0 && barShowingPoison) {
-			var rightSideFill = boyfriend.bfColor : boyfriend.playerColor;
+			var rightSideFill = boyfriend.playerColor;
 			healthBar.createFilledBar(leftSideFill, rightSideFill);
 			barShowingPoison = false;
 		}
