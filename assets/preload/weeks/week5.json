@@ -21,7 +21,7 @@
 	"hideFreeplay": false,
 	"songshidden": [
 			false,
-			true,
+			false,
 			true
 	]
 }
