@@ -99,6 +99,15 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.onChange = onChangeFPSCounter;
 		#end
 
+		#if !mobile
+		var option:Option = new Option('Freeplay Cutscenes',
+			'If unchecked, playing a song on freeplay wont do a cutscene.',
+			'freeplayCutscenes',
+			'bool',
+			false);
+		addOption(option);
+		#end
+
 		super();
 	}
 

@@ -1065,7 +1065,7 @@ class PlayState extends MusicBeatState
 		#end
 		
 		var daSong:String = Paths.formatToSongPath(curSong);
-		if (isStoryMode && !seenCutscene)
+		if (isStoryMode || ClientPrefs.freeplayCutscenes && !seenCutscene)
 		{
 			switch (daSong)
 			{
