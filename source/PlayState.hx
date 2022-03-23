@@ -170,6 +170,7 @@ class PlayState extends MusicBeatState
 	public var instakillOnMiss:Bool = false;
 	public var cpuControlled:Bool = false;
 	public var practiceMode:Bool = false;
+	public var fragilefunkin:Bool = false;
 
 	var botplaySine:Float = 0;
 	var botplayTxt:FlxText;
@@ -214,6 +215,13 @@ class PlayState extends MusicBeatState
 	var bgGirls:BackgroundGirls;
 	var wiggleShit:WiggleEffect = new WiggleEffect();
 	var bgGhouls:BGSprite;
+
+	//M+ Modifiers
+	var poisonPlus:Bool = false;
+	var beingPoisioned:Bool = false;
+	var poisonTimes:Int = 0;
+	// private var poisonColor:FlxColor = 0xFFA22CD1
+	private var barShowingPoison:Bool = false;
 
 	public var songScore:Int = 0;
 	public var songHits:Int = 0;
@@ -274,6 +282,8 @@ class PlayState extends MusicBeatState
 		debugKeysChart = ClientPrefs.copyKey(ClientPrefs.keyBinds.get('debug_1'));
 		debugKeysCharacter = ClientPrefs.copyKey(ClientPrefs.keyBinds.get('debug_2'));
 
+		//modifiers
+
 		keysArray = [
 			ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_left')),
 			ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_down')),
@@ -296,6 +306,7 @@ class PlayState extends MusicBeatState
 		instakillOnMiss = ClientPrefs.getGameplaySetting('instakill', false);
 		practiceMode = ClientPrefs.getGameplaySetting('practice', false);
 		cpuControlled = ClientPrefs.getGameplaySetting('botplay', false);
+		fragilefunkin = ClientPrefs.getGameplaySetting('frigilefunkin', false);
 
 		// var gameCam:FlxCamera = FlxG.camera;
 		camGame = new FlxCamera();
@@ -2237,6 +2248,16 @@ class PlayState extends MusicBeatState
 		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) + (150 * iconP1.scale.x - 150) / 2 - iconOffset;
 		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (150 * iconP2.scale.x) / 2 - iconOffset * 2;
 
+		if (poisonTimes > 0 && !barShowingPoison) {
+			var rightSideFill = boyfriend.bfColor : boyfriend.poisonColor;
+			healthBar.createFilledBar(leftSideFill, rightSideFill);
+			barShowingPoison = true;
+		} else if (poisonTimes == 0 && barShowingPoison) {
+			var rightSideFill = boyfriend.bfColor : boyfriend.playerColor;
+			healthBar.createFilledBar(leftSideFill, rightSideFill);
+			barShowingPoison = false;
+		}
+
 		if (health > 2)
 			health = 2;
 
@@ -3747,6 +3768,26 @@ class PlayState extends MusicBeatState
 	{
 		if (!note.wasGoodHit)
 		{
+			// always show the graphic
+			//if (!OptionsHandler.options.dontMuteMiss)
+				//vocals.volume = 0;
+			if (fragi && poisonTimes < 3)
+			{
+				poisonTimes += 1;
+				var fragilefunkinTimer = new FlxTimer().start(0.5, function(tmr:FlxTimer)
+				{
+					//if (opponentPlayer)
+						//health += 0.04;
+					//else
+						health -= 0.04;
+				}, 0);
+				// stop timer after 3 seconds
+				new FlxTimer().start(3, function(tmr:FlxTimer)
+				{
+					fragilefunkinTimer.cancel();
+					poisonTimes -= 1;
+				});
+			}
 			if(cpuControlled && (note.ignoreNote || note.hitCausesMiss)) return;
 
 			if(note.hitCausesMiss) {
