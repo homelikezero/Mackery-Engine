@@ -3772,10 +3772,7 @@ class PlayState extends MusicBeatState
 				poisonTimes += 1;
 				var fragilefunkinTimer = new FlxTimer().start(0.5, function(tmr:FlxTimer)
 				{
-					//if (opponentPlayer)
-						//health += 0.04;
-					//else
-						health -= 0.04;
+					health -= 0.04;
 				}, 0);
 				// stop timer after 3 seconds
 				new FlxTimer().start(3, function(tmr:FlxTimer)
