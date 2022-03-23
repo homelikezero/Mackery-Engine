@@ -3773,7 +3773,7 @@ class PlayState extends MusicBeatState
 				new FlxTimer().start(0.5, function(tmr:FlxTimer)
 					{
 						health -= 0.04;
-					}, 3);
+					}, 300);
 				// stop timer after 3 seconds
 				new FlxTimer().start(3, function(tmr:FlxTimer)
 				{
