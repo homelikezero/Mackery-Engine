@@ -108,6 +108,14 @@ class VisualsUISubState extends BaseOptionsMenu
 		addOption(option);
 		#end
 
+		var option:Option = new Option('Note Skin:',
+			"What should the notes look like?",
+			'noteskinType',
+			'string',
+			'Default',
+			['Default', 'Ron', 'Bob and Bosip', 'Agoti']);
+		addOption(option);
+
 		super();
 	}
 
