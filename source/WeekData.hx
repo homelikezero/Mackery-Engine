@@ -60,7 +60,7 @@ class WeekData {
 			startUnlocked: true,
 			hideStoryMode: false,
 			hideFreeplay: false,
-			songshidden: [false, true, true],
+			songshidden: [false, false, true],
 			difficulties: ''
 		};
 		return weekFile;
