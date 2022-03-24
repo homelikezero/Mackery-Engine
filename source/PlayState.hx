@@ -172,6 +172,7 @@ class PlayState extends MusicBeatState
 	public var practiceMode:Bool = false;
 	public var fragilefunkin:Bool = false;
 	public var duoMode:Bool = false;
+	public var poisonFright:Float = 0;
 
 	var botplaySine:Float = 0;
 	var botplayTxt:FlxText;
@@ -221,8 +222,11 @@ class PlayState extends MusicBeatState
 	var poisonPlus:Bool = false;
 	var beingPoisioned:Bool = false;
 	var poisonTimes:Int = 0;
-	// private var poisonColor:FlxColor = 0xFFA22CD1
+	private var poisonColor:FlxColor = 0xFFA22CD1;
 	private var barShowingPoison:Bool = false;
+	var poisonMultiplier:Float = 0;
+	var poisonExr:Bool = false;
+	public static var opponentPlayer:Bool = false;
 
 	public var songScore:Int = 0;
 	public var songHits:Int = 0;
@@ -309,6 +313,7 @@ class PlayState extends MusicBeatState
 		cpuControlled = ClientPrefs.getGameplaySetting('botplay', false);
 		fragilefunkin = ClientPrefs.getGameplaySetting('poison', false);
 		duoMode = ClientPrefs.getGameplaySetting('duo', false);
+		poisonFright = ClientPrefs.getGameplaySetting('drain', 0);
 
 		// var gameCam:FlxCamera = FlxG.camera;
 		camGame = new FlxCamera();
@@ -403,6 +408,8 @@ class PlayState extends MusicBeatState
 		boyfriendGroup = new FlxSpriteGroup(BF_X, BF_Y);
 		dadGroup = new FlxSpriteGroup(DAD_X, DAD_Y);
 		gfGroup = new FlxSpriteGroup(GF_X, GF_Y);
+
+		poisonMultiplier = poisonFright;
 
 		switch (curStage)
 		{
@@ -2192,6 +2199,17 @@ class PlayState extends MusicBeatState
 			scoreTxt.text = 'Score: ' + songScore + ' | Misses: ' + songMisses + ' | Rating: ' + ratingName;
 		} else {
 			scoreTxt.text = 'Score: ' + songScore + ' | Misses: ' + songMisses + ' | Rating: ' + ratingName + ' (' + Highscore.floorDecimal(ratingPercent * 100, 2) + '%)' + ' - ' + ratingFC;//peeps wanted no integer rating
+		}
+
+		if (poisonFright > 0) {
+			poisonExr = true;
+		}
+		poisonMultiplier == poisonFright;
+		if (poisonExr) {
+			new FlxTimer().start(0.5, function(tmr:FlxTimer)
+			{
+				health -= poisonMultiplier * (opponentPlayer ? -1 : 1)/ 700000;
+			}, 0);
 		}
 
 		if(botplayTxt.visible) {
