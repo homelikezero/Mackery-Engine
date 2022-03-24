@@ -11,6 +11,9 @@ class HealthIcon extends FlxSprite
 	private var isOldIcon:Bool = false;
 	private var isPlayer:Bool = false;
 	private var char:String = '';
+	
+	//for poison
+	fragilefunkin = ClientPrefs.getGameplaySetting('poison', false);
 
 	public function new(char:String = 'bf', isPlayer:Bool = false)
 	{
