@@ -171,6 +171,7 @@ class PlayState extends MusicBeatState
 	public var cpuControlled:Bool = false;
 	public var practiceMode:Bool = false;
 	public var fragilefunkin:Bool = false;
+	public var duoMode:Bool = false;
 
 	var botplaySine:Float = 0;
 	var botplayTxt:FlxText;
@@ -306,7 +307,8 @@ class PlayState extends MusicBeatState
 		instakillOnMiss = ClientPrefs.getGameplaySetting('instakill', false);
 		practiceMode = ClientPrefs.getGameplaySetting('practice', false);
 		cpuControlled = ClientPrefs.getGameplaySetting('botplay', false);
-		fragilefunkin = ClientPrefs.getGameplaySetting('frigilefunkin', false);
+		fragilefunkin = ClientPrefs.getGameplaySetting('poison', false);
+		duoMode = ClientPrefs.getGameplaySetting('duo', false);
 
 		// var gameCam:FlxCamera = FlxG.camera;
 		camGame = new FlxCamera();
@@ -1463,6 +1465,11 @@ class PlayState extends MusicBeatState
 			return;
 		}
 
+		if (duoMode)
+		{
+			controls.setKeyboardScheme(Duo(true));
+		}
+
 		inCutscene = false;
 		var ret:Dynamic = callOnLuas('onStartCountdown', []);
 		if(ret != FunkinLua.Function_Stop) {
@@ -1945,6 +1952,11 @@ class PlayState extends MusicBeatState
 				resyncVocals();
 			}
 
+			if (duoMode) {
+				controls.setKeyboardScheme(Duo(true));
+			}
+			controls.setKeyboardScheme(Solo(false));
+
 			if (!startTimer.finished)
 				startTimer.active = true;
 			if (finishTimer != null && !finishTimer.finished)
@@ -2050,6 +2062,11 @@ class PlayState extends MusicBeatState
 			{
 				healthGainNote -= 1;
 			}
+		
+		if (!opponentPlayer && !duoMode) {
+			controls.setKeyboardScheme(Solo(false));
+		}
+
 		switch (curStage)
 		{
 			case 'schoolEvil':
@@ -3766,17 +3783,18 @@ class PlayState extends MusicBeatState
 		{
 			// always show the graphic
 			//if (!OptionsHandler.options.dontMuteMiss)
-				//vocals.volume = 0;
-			if (fragilefunkin)
+			//vocals.volume = 0;
+			if (fragilefunkin && poisonTimes < 3 && !note.wasGoodHit)
 			{
 				poisonTimes += 1;
-				new FlxTimer().start(0.3, function(tmr:FlxTimer)
+				var poisonPlusTimer = new FlxTimer().start(0.5, function(tmr:FlxTimer)
 				{
 					health -= 0.04;
-				}, 300);
+				}, 0);
 				// stop timer after 3 seconds
 				new FlxTimer().start(3, function(tmr:FlxTimer)
 				{
+					poisonPlusTimer.cancel();
 					poisonTimes -= 1;
 				});
 			}
