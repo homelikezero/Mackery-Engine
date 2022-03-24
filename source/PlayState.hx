@@ -3653,12 +3653,14 @@ class PlayState extends MusicBeatState
 			var poisonPlusTimer = new FlxTimer().start(0.5, function(tmr:FlxTimer)
 			{
 				health -= 0.04;
+				iconP1.animation.curAnim.curFrame = 1;
 			}, 0);
 			// stop timer after 3 seconds
 			new FlxTimer().start(3, function(tmr:FlxTimer)
 			{
 				poisonPlusTimer.cancel();
 				poisonTimes -= 1;
+				iconP1.animation.curAnim.curFrame = 0;
 			});
 		}
 
