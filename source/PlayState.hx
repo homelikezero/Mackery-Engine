@@ -1955,7 +1955,6 @@ class PlayState extends MusicBeatState
 			if (duoMode) {
 				controls.setKeyboardScheme(Duo(true));
 			}
-			controls.setKeyboardScheme(Solo(false));
 
 			if (!startTimer.finished)
 				startTimer.active = true;
@@ -2062,11 +2061,6 @@ class PlayState extends MusicBeatState
 			{
 				healthGainNote -= 1;
 			}
-		
-		if (!opponentPlayer && !duoMode) {
-			controls.setKeyboardScheme(Solo(false));
-		}
-
 		switch (curStage)
 		{
 			case 'schoolEvil':
