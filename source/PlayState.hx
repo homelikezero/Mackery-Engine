@@ -3647,6 +3647,21 @@ class PlayState extends MusicBeatState
 		});
 		combo = 0;
 
+		if (fragileFunkin && poisonTimes < 3)
+		{
+			poisonTimes += 1;
+			var poisonPlusTimer = new FlxTimer().start(0.5, function(tmr:FlxTimer)
+			{
+				health -= 0.04;
+			}, 0);
+			// stop timer after 3 seconds
+			new FlxTimer().start(3, function(tmr:FlxTimer)
+			{
+				poisonPlusTimer.cancel();
+				poisonTimes -= 1;
+			});
+		}
+
 		health -= daNote.missHealth * healthLoss;
 		if(instakillOnMiss)
 		{
@@ -3778,20 +3793,6 @@ class PlayState extends MusicBeatState
 			// always show the graphic
 			//if (!OptionsHandler.options.dontMuteMiss)
 			//vocals.volume = 0;
-			if (fragilefunkin && poisonTimes < 3 && !note.wasGoodHit)
-			{
-				poisonTimes += 1;
-				var poisonPlusTimer = new FlxTimer().start(0.5, function(tmr:FlxTimer)
-				{
-					health -= 0.04;
-				}, 0);
-				// stop timer after 3 seconds
-				new FlxTimer().start(3, function(tmr:FlxTimer)
-				{
-					poisonPlusTimer.cancel();
-					poisonTimes -= 1;
-				});
-			}
 			if(cpuControlled && (note.ignoreNote || note.hitCausesMiss)) return;
 
 			if(note.hitCausesMiss) {
