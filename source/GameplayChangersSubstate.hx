@@ -85,8 +85,8 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 
 		var option:GameplayOption = new GameplayOption('Poison Fright', 'drain', 'float', 0);
 		option.minValue = 0;
-		option.maxValue = 50;
-		option.changeValue = 5;
+		option.maxValue = 5;
+		option.changeValue = 1;
 		optionsArray.push(option);
 	}
 
