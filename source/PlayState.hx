@@ -3647,7 +3647,7 @@ class PlayState extends MusicBeatState
 		});
 		combo = 0;
 
-		if (fragileFunkin && poisonTimes < 3)
+		if (fragilefunkin && poisonTimes < 3)
 		{
 			poisonTimes += 1;
 			var poisonPlusTimer = new FlxTimer().start(0.5, function(tmr:FlxTimer)
