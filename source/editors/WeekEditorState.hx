@@ -169,6 +169,7 @@ class WeekEditorState extends MusicBeatState
 	var girlfriendInputText:FlxUIInputText;
 
 	var hideCheckbox:FlxUICheckBox;
+	var hiddenCheckbox:FlxUICheckBox;
 
 	public static var weekFileName:String = 'week1';
 	
@@ -214,6 +215,7 @@ class WeekEditorState extends MusicBeatState
 		tab_group.add(new FlxText(weekFileInputText.x, weekFileInputText.y - 18, 0, 'Week File:'));
 
 		tab_group.add(songsInputText);
+		tab_group.add(hiddenCheckbox);
 		tab_group.add(opponentInputText);
 		tab_group.add(boyfriendInputText);
 		tab_group.add(girlfriendInputText);
@@ -273,6 +275,7 @@ class WeekEditorState extends MusicBeatState
 		girlfriendInputText.text = weekFile.weekCharacters[2];
 
 		hideCheckbox.checked = weekFile.hideStoryMode;
+		hiddenCheckbox.checked = weekFile.hiddenSong;
 
 		weekBeforeInputText.text = weekFile.weekBefore;
 
@@ -601,6 +604,13 @@ class WeekEditorFreeplayState extends MusicBeatState
 
 			var icon:HealthIcon = new HealthIcon(weekFile.songs[i][1]);
 			icon.sprTracker = songText;
+
+			//should allow hiding a song
+			hiddenCheckbox = new FlxUICheckBox(10, weekFileInputText.y + 40, null, null, "Hide Song from Freeplay?", 100);
+			hiddenCheckbox.callback = function()
+			{
+				weekFile.songshidden = hiddenCheckbox.checked;
+			};
 
 			// using a FlxGroup is too much fuss!
 			iconArray.push(icon);
