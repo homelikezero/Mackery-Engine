@@ -170,6 +170,9 @@ class PlayState extends MusicBeatState
 	public var instakillOnMiss:Bool = false;
 	public var cpuControlled:Bool = false;
 	public var practiceMode:Bool = false;
+	public var fragilefunkin:Bool = false;
+	public var duoMode:Bool = false;
+	public var poisonFright:Float = 0;
 
 	var botplaySine:Float = 0;
 	var botplayTxt:FlxText;
@@ -214,6 +217,16 @@ class PlayState extends MusicBeatState
 	var bgGirls:BackgroundGirls;
 	var wiggleShit:WiggleEffect = new WiggleEffect();
 	var bgGhouls:BGSprite;
+
+	//M+ Modifiers
+	var poisonPlus:Bool = false;
+	var beingPoisioned:Bool = false;
+	var poisonTimes:Int = 0;
+	private var poisonColor:FlxColor = 0xFFA22CD1;
+	private var barShowingPoison:Bool = false;
+	var poisonMultiplier:Float = 0;
+	var poisonExr:Bool = false;
+	public static var opponentPlayer:Bool = false;
 
 	public var songScore:Int = 0;
 	public var songHits:Int = 0;
@@ -274,6 +287,8 @@ class PlayState extends MusicBeatState
 		debugKeysChart = ClientPrefs.copyKey(ClientPrefs.keyBinds.get('debug_1'));
 		debugKeysCharacter = ClientPrefs.copyKey(ClientPrefs.keyBinds.get('debug_2'));
 
+		//modifiers
+
 		keysArray = [
 			ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_left')),
 			ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_down')),
@@ -296,6 +311,9 @@ class PlayState extends MusicBeatState
 		instakillOnMiss = ClientPrefs.getGameplaySetting('instakill', false);
 		practiceMode = ClientPrefs.getGameplaySetting('practice', false);
 		cpuControlled = ClientPrefs.getGameplaySetting('botplay', false);
+		fragilefunkin = ClientPrefs.getGameplaySetting('poison', false);
+		duoMode = ClientPrefs.getGameplaySetting('duo', false);
+		poisonFright = ClientPrefs.getGameplaySetting('drain', 0);
 
 		// var gameCam:FlxCamera = FlxG.camera;
 		camGame = new FlxCamera();
@@ -390,6 +408,8 @@ class PlayState extends MusicBeatState
 		boyfriendGroup = new FlxSpriteGroup(BF_X, BF_Y);
 		dadGroup = new FlxSpriteGroup(DAD_X, DAD_Y);
 		gfGroup = new FlxSpriteGroup(GF_X, GF_Y);
+
+		poisonMultiplier = poisonFright;
 
 		switch (curStage)
 		{
@@ -1452,6 +1472,11 @@ class PlayState extends MusicBeatState
 			return;
 		}
 
+		if (duoMode)
+		{
+			controls.setKeyboardScheme(Duo(true));
+		}
+
 		inCutscene = false;
 		var ret:Dynamic = callOnLuas('onStartCountdown', []);
 		if(ret != FunkinLua.Function_Stop) {
@@ -1934,6 +1959,10 @@ class PlayState extends MusicBeatState
 				resyncVocals();
 			}
 
+			if (duoMode) {
+				controls.setKeyboardScheme(Duo(true));
+			}
+
 			if (!startTimer.finished)
 				startTimer.active = true;
 			if (finishTimer != null && !finishTimer.finished)
@@ -2172,6 +2201,17 @@ class PlayState extends MusicBeatState
 			scoreTxt.text = 'Score: ' + songScore + ' | Misses: ' + songMisses + ' | Rating: ' + ratingName + ' (' + Highscore.floorDecimal(ratingPercent * 100, 2) + '%)' + ' - ' + ratingFC;//peeps wanted no integer rating
 		}
 
+		if (poisonFright > 0) {
+			poisonExr = true;
+		}
+		poisonMultiplier == poisonFright;
+		if (poisonExr) {
+			new FlxTimer().start(0.5, function(tmr:FlxTimer)
+			{
+				health -= poisonMultiplier * (opponentPlayer ? -1 : 1)/ 700000;
+			}, 0);
+		}
+
 		if(botplayTxt.visible) {
 			botplaySine += 180 * elapsed;
 			botplayTxt.alpha = 1 - Math.sin((Math.PI * botplaySine) / 180);
@@ -2236,6 +2276,12 @@ class PlayState extends MusicBeatState
 
 		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) + (150 * iconP1.scale.x - 150) / 2 - iconOffset;
 		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (150 * iconP2.scale.x) / 2 - iconOffset * 2;
+
+		if (poisonTimes > 0 && !barShowingPoison) {
+			barShowingPoison = true;
+		} else if (poisonTimes == 0 && barShowingPoison) {
+			barShowingPoison = false;
+		}
 
 		if (health > 2)
 			health = 2;
@@ -3619,6 +3665,23 @@ class PlayState extends MusicBeatState
 		});
 		combo = 0;
 
+		if (fragilefunkin && poisonTimes < 3)
+		{
+			poisonTimes += 1;
+			var poisonPlusTimer = new FlxTimer().start(0.5, function(tmr:FlxTimer)
+			{
+				health -= 0.04;
+				iconP1.animation.curAnim.curFrame = 1;
+			}, 0);
+			// stop timer after 3 seconds
+			new FlxTimer().start(3, function(tmr:FlxTimer)
+			{
+				poisonPlusTimer.cancel();
+				poisonTimes -= 1;
+				iconP1.animation.curAnim.curFrame = 0;
+			});
+		}
+
 		health -= daNote.missHealth * healthLoss;
 		if(instakillOnMiss)
 		{
@@ -3747,6 +3810,9 @@ class PlayState extends MusicBeatState
 	{
 		if (!note.wasGoodHit)
 		{
+			// always show the graphic
+			//if (!OptionsHandler.options.dontMuteMiss)
+			//vocals.volume = 0;
 			if(cpuControlled && (note.ignoreNote || note.hitCausesMiss)) return;
 
 			if(note.hitCausesMiss) {
